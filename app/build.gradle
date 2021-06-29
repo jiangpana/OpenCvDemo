@@ -1,59 +1,65 @@
 plugins {
-  id 'com.android.application'
+    id 'com.android.application'
 }
+apply plugin: 'kotlin-android'
 
 android {
-  compileSdkVersion 30
-  buildToolsVersion "30.0.3"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
 
-  defaultConfig {
-    applicationId "cn.ololee.myopencvhelloworld"
-    minSdkVersion 21
-    targetSdkVersion 30
-    versionCode 1
-    versionName "1.0"
+    defaultConfig {
+        applicationId "cn.ololee.myopencvhelloworld"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
 
-    testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags("-std=c++11", "-frtti", "-fexceptions -lz")
+                abiFilters 'arm64-v8a'
+                arguments "-DANDROID_STL=c++_shared"
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
     externalNativeBuild {
-      cmake {
-        cppFlags ""
-        abiFilters 'arm64-v8a'
-        arguments "-DANDROID_STL=c++_shared"
-      }
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
     }
-  }
-
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
     }
-  }
-  externalNativeBuild {
-    cmake {
-      path "src/main/cpp/CMakeLists.txt"
-      version "3.10.2"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
-  }
-  sourceSets {
-    main {
-      jniLibs.srcDirs = ['libs']
-    }
-  }
-  compileOptions {
-    sourceCompatibility JavaVersion.VERSION_1_8
-    targetCompatibility JavaVersion.VERSION_1_8
-  }
-  buildToolsVersion '28.0.3'
-  ndkVersion '22.1.7171670'
+    buildToolsVersion '28.0.3'
+    ndkVersion '22.1.7171670'
 }
 
 dependencies {
-  implementation fileTree(dir: 'libs', include: ['*.jar'])
-  implementation 'androidx.appcompat:appcompat:1.2.0'
-  implementation 'com.google.android.material:material:1.3.0'
-  implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-  testImplementation 'junit:junit:4.+'
-  androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-  androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
